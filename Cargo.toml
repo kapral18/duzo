@@ -1,0 +1,68 @@
+[workspace]
+members = [".", "crates/duzo-core", "crates/duzo-render"]
+resolver = "3"
+
+[workspace.package]
+version = "0.8.1"
+edition = "2024"
+rust-version = "1.88"
+license = "MIT"
+authors = ["Karen Grigoryan", "Cesar Ferreira"]
+repository = "https://github.com/kapral18/duzo"
+
+[workspace.dependencies]
+anyhow = "1"
+dirs = "6.0.0"
+serde = { version = "1", features = ["derive"] }
+
+[package]
+name = "duzo"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Disk usage TUI that shows what is full and what is using it"
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+readme = "README.md"
+keywords = ["disk", "tui", "du", "df", "storage"]
+categories = ["command-line-utilities", "filesystem", "visualization"]
+# The README points at the screenshot by its raw.githubusercontent URL, so the
+# image renders on crates.io without shipping a megabyte of PNG in the crate.
+exclude = ["assets/"]
+
+[lib]
+name = "duzo"
+path = "src/lib.rs"
+
+[[bin]]
+name = "duzo"
+path = "src/main.rs"
+
+[dependencies]
+duzo-core = { path = "crates/duzo-core", version = "0.8.1" }
+duzo-render = { path = "crates/duzo-render", version = "0.8.1" }
+anyhow.workspace = true
+serde.workspace = true
+ratatui = "0.29"
+crossterm = "0.28"
+dirs.workspace = true
+serde_json = "1"
+clap = { version = "4", features = ["derive"] }
+unicode-width = "0.2"
+jiff = "0.2.35"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+rustix = { version = "0.38.44", features = ["fs"] }
+
+[package.metadata.release]
+# This hook belongs only to the root package. A workspace-level hook would run
+# once for each member and create CHANGELOG.md files inside the sub-crates.
+pre-release-hook = ["git-cliff", "-o", "CHANGELOG.md", "--tag", "v{{version}}"]
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true
+panic = "abort"

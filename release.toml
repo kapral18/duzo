@@ -1,0 +1,10 @@
+sign-commit = false
+sign-tag = false
+publish = true
+push = true
+
+# The engine crates and the CLI move together; one version, one tag. The
+# sub-crates set `tag = false` in their own Cargo.toml so only the root
+# package stamps `vX.Y.Z`.
+shared-version = true
+tag-name = "v{{version}}"
